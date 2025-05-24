@@ -1,0 +1,17 @@
+{% extends 'users/base.html' %}
+
+{% block title %}Пользователи не найдены - RandomUser App{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="alert alert-warning text-center">
+            <h4>Пользователи не найдены</h4>
+            <p>В базе данных пока нет пользователей для отображения случайного пользователя.</p>
+            <a href="{% url 'users:index' %}" class="btn btn-primary">
+                Перейти на главную страницу
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

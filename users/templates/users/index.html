@@ -1,0 +1,116 @@
+{% extends 'users/base.html' %}
+
+{% block title %}Главная - RandomUser App{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1>Пользователи из RandomUser API</h1>
+        
+        <!-- Форма для загрузки новых пользователей -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Загрузить новых пользователей</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" autocomplete="off" class="row g-3">
+                    {% csrf_token %}
+                    <div class="col-md-6">
+                        <label for="count" class="form-label">Количество пользователей:</label>
+                        <input type="number" class="form-control" id="count" name="count" min="1" max="5000" value="10" required>
+                    </div>
+                    <div class="col-md-6 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary">Загрузить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Статистика -->
+        <div class="alert alert-info">
+            <strong>Всего пользователей в базе:</strong> {{ total_users }}
+        </div>
+
+        <!-- Таблица пользователей -->
+        {% if page_obj %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Фото</th>
+                        <th>Пол</th>
+                        <th>Имя</th>
+                        <th>Фамилия</th>
+                        <th>Email</th>
+                        <th>Телефон</th>
+                        <th>Адрес</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in page_obj %}
+                    <tr>
+                        <td>
+                            <img src="{{ user.picture }}" alt="{{ user.first_name }}" class="user-photo">
+                        </td>
+                        <td>
+                            <span class="badge {% if user.gender == 'male' %}bg-primary{% else %}bg-danger{% endif %} gender-badge">
+                                {% if user.gender == 'male' %}Муж{% else %}Жен{% endif %}
+                            </span>
+                        </td>
+                        <td>{{ user.first_name }}</td>
+                        <td>{{ user.last_name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.phone }}</td>
+                        <td>{{ user.city }}, {{ user.country }}</td>
+                        <td>
+                            <a href="{% url 'users:detail' user.id %}" class="btn btn-sm btn-outline-primary">
+                                Подробнее
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Пагинация -->
+        {% if page_obj.has_other_pages %}
+        <nav aria-label="Пагинация пользователей">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1">Первая</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
+                    </li>
+                {% endif %}
+
+                <li class="page-item active">
+                    <span class="page-link">
+                        Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+                    </span>
+                </li>
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Следующая</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Последняя</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+
+        {% else %}
+        <div class="alert alert-warning">
+            <h4>Пользователи не найдены</h4>
+            <p>В базе данных пока нет пользователей. Загрузите их с помощью формы выше.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

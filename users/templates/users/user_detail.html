@@ -1,0 +1,55 @@
+{% extends 'users/base.html' %}
+
+{% block title %}{{ user.first_name }} {{ user.last_name }} - RandomUser App{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        {% if is_random %}
+        <div class="alert alert-info">
+            <i class="fas fa-dice"></i> Это случайный пользователь! 
+            <a href="{% url 'users:random' %}" class="btn btn-sm btn-outline-primary ms-2">
+                Показать другого
+            </a>
+        </div>
+        {% endif %}
+
+        <div class="card">
+            <div class="card-header">
+                <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+                <span class="badge {% if user.gender == 'male' %}bg-primary{% else %}bg-danger{% endif %}">
+                    {% if user.gender == 'male' %}Мужчина{% else %}Женщина{% endif %}
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        <img src="{{ user.picture }}" alt="{{ user.first_name }}" class="user-photo-large mb-3">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>Контактная информация</h5>
+                                <p><strong>Email:</strong> <a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
+                                <p><strong>Телефон:</strong> <a href="tel:{{ user.phone }}">{{ user.phone }}</a></p>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Адрес</h5>
+                                <p>
+                                    {{ user.street_number }} {{ user.street_name }}<br>
+                                    {{ user.city }}, {{ user.state }}<br>
+                                    {{ user.country }}, {{ user.postcode }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="{% url 'users:index' %}" class="btn btn-secondary">Назад к списку</a>
+                <a href="{% url 'users:random' %}" class="btn btn-primary">Случайный пользователь</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
